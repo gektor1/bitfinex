@@ -4,6 +4,7 @@ angular.module('alertApp', [])
 //                $scope.audio = new Audio('http://www.freesfx.co.uk/rx2/mp3s/6/18580_1464796418.mp3');
                 $scope.audio = new Audio('http://www.freesfx.co.uk/rx2/mp3s/2/13654_1459784657.mp3'); //http://www.freesfx.co.uk/soundeffects/all_bells/?p=1
 
+                $scope.first = true;
                 $scope.alert = false;
                 $scope.request = false;
                 
@@ -49,7 +50,7 @@ angular.module('alertApp', [])
                         $scope.request = true;
 
                         var query = '?limit=1000';
-                        if ($scope.input.n) {
+                        if ($scope.first != true && $scope.input.n) {
                             var unix = (new Date).getTime();
                             query += '&start=' + (unix - $scope.input.n * 60 * 1000)
                         }
@@ -65,7 +66,8 @@ angular.module('alertApp', [])
                             $scope.trades.hist.sort(function(a, b) { 
                                 return a[0] > b[0] ? -1 : 1;
                             });
-
+                            
+                            $scope.first = false;
 //                            $scope.trades.hist = rows.data;
 
                             $scope.calc();
