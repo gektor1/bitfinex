@@ -38,7 +38,9 @@
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">Currency</span>
-                        <input type="text" class="form-control" ng-model="currency" readonly />
+                        <!--<input type="text" class="form-control" ng-model="currency" readonly />-->
+                        
+                        <select class="form-control" ng-options="cur for cur in currencies" ng-model="currency"></select>                        
                     </div>
                 </div>
                 

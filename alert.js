@@ -9,7 +9,21 @@ angular.module('alertApp', [])
                 
                 $scope.intervals = 10000;
                 
-                $scope.currency = location.search.replace(/^.*?\=/, '');
+                $scope.currencies = ["BTCUSD","LTCUSD","LTCBTC","ETHUSD","ETHBTC","ETCBTC","ETCUSD","RRTUSD","RRTBTC","ZECUSD","ZECBTC","XMRUSD",
+                    "XMRBTC","DSHUSD","DSHBTC","BTCEUR","XRPUSD","XRPBTC","IOTUSD","IOTBTC","IOTETH","EOSUSD","EOSBTC","EOSETH","SANUSD","SANBTC",
+                    "SANETH","OMGUSD","OMGBTC","OMGETH","BCHUSD","BCHBTC","BCHETH","NEOUSD","NEOBTC","NEOETH","ETPUSD","ETPBTC","ETPETH","QTMUSD",
+                    "QTMBTC","QTMETH","AVTUSD","AVTBTC","AVTETH","EDOUSD","EDOBTC","EDOETH","BTGUSD","BTGBTC","DATUSD","DATBTC","DATETH","QSHUSD",
+                    "QSHBTC","QSHETH","YYWUSD","YYWBTC","YYWETH","GNTUSD","GNTBTC","GNTETH","SNTUSD","SNTBTC","SNTETH","IOTEUR","BATUSD","BATBTC",
+                    "BATETH","MNAUSD","MNABTC","MNAETH","FUNUSD","FUNBTC","FUNETH","ZRXUSD","ZRXBTC","ZRXETH","TNBUSD","TNBBTC","TNBETH","SPKUSD",
+                    "SPKBTC","SPKETH","TRXUSD","TRXBTC","TRXETH","RCNUSD","RCNBTC","RCNETH","RLCUSD","RLCBTC","RLCETH","AIDUSD","AIDBTC","AIDETH",
+                    "SNGUSD","SNGBTC","SNGETH","REPUSD","REPBTC","REPETH","ELFUSD","ELFBTC","ELFETH"];
+                
+//                $scope.currency = location.search.replace(/^.*?\=/, '');
+                $scope.currency = 'BTCUSD';
+
+                if (!$scope.currency) {
+                    return false;
+                }
 
                 document.title = $scope.currency;
 
@@ -116,6 +130,15 @@ angular.module('alertApp', [])
                 });
                 $scope.$watch("input.n", function (newValue, oldValue) {
                     $scope.calc();
+                });
+                $scope.$watch("currency", function (newValue, oldValue) {
+                    $scope.result = {
+                        min: 0,
+                        max: 0,
+                        last: 0
+                    };
+                    $scope.trades.hist = [];
+                    $scope.trades.count = [];
                 });
 
                 $scope.start();
