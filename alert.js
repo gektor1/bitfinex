@@ -19,7 +19,7 @@ angular.module('alertApp', [])
                 $scope.interval;
 
                 $scope.start = function () {
-                    if (angular.isDefined($scope.interval))
+                    if ($scope.interval != null)
                         return;
 
                     $scope.interval = $interval(function () {
@@ -40,7 +40,7 @@ angular.module('alertApp', [])
                 };
 
                 $scope.stop = function () {
-                    if (angular.isDefined($scope.interval)) {
+                    if (angular.isDefined($scope.interval) && $scope.interval != null) {
                         $interval.cancel($scope.interval);
                         $scope.interval = null;
                     }
