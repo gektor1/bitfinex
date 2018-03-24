@@ -1,0 +1,99 @@
+<!doctype html>
+<html ng-app="alertApp">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="alert.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    </head>
+    <body class="container">
+        <style>
+            .glyphicon-refresh-animate {
+                -animation: spin .7s infinite linear;
+                -ms-animation: spin .7s infinite linear;
+                -webkit-animation: spinw .7s infinite linear;
+                -moz-animation: spinm .7s infinite linear;
+            }
+
+            @keyframes spin {
+                from { transform: scale(1) rotate(0deg);}
+                to { transform: scale(1) rotate(360deg);}
+            }
+
+            @-webkit-keyframes spinw {
+                from { -webkit-transform: rotate(0deg);}
+                to { -webkit-transform: rotate(360deg);}
+            }
+
+            @-moz-keyframes spinm {
+                from { -moz-transform: rotate(0deg);}
+                to { -moz-transform: rotate(360deg);}
+            }
+        </style>
+        <div class="col-lg-6 col-offset-lg-3 centered" ng-controller="AlertController">
+
+            <form novalidate class="form-horizontal">
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">N (minutes)</span>
+                        <input type="text" class="form-control" ng-model="input.n" ng-init="input.n=1" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">K (percents)</span>
+                        <input type="text" class="form-control" ng-model="input.k" ng-init="input.k=1" />
+                    </div>
+                </div>
+
+                <div class="form-group" ng-if="!interval">
+                    <button type="button" class="btn btn-default" ng-click="start()">Start</button>
+                </div>
+                <div class="form-group" ng-if="interval">
+                    <button type="button" class="btn btn-default" ng-click="stop()">Stop</button>
+                </div>
+
+                <div class="form-group" ng-if="true == request">
+                    <div class="col-md-12 text-center">
+                        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">X ($)</span>
+                        <input type="text" class="form-control" ng-model="result.last" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">MAX ($)</span>
+                        <input type="text" class="form-control" ng-model="result.max" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">MIN ($)</span>
+                        <input type="text" class="form-control" ng-model="result.min" readonly />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">COUNT</span>
+                        <input type="text" class="form-control" ng-model="trades.hist.length" readonly />
+                    </div>
+                </div>
+            </form>
+
+            <div class="alert alert-danger" ng-if="true == alert">
+                <strong>Danger :)</strong>
+            </div>
+            <!--<pre>alert = {{alert | json}}</pre>-->
+            <!--            <pre>result = {{result | json}}</pre>
+                        <pre>trades = {{trades | json}}</pre>-->
+
+
+        </div>
+    </body>
+</html>
