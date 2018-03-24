@@ -7,7 +7,8 @@ angular.module('alertApp', [])
                 $scope.alert = false;
                 $scope.request = false;
                 
-                $scope.intervals = 10000;
+//                $scope.intervals = 10000; //DEBUG
+                $scope.intervals = 30000;
                 
                 $scope.currencies = ["BTCUSD","LTCUSD","LTCBTC","ETHUSD","ETHBTC","ETCBTC","ETCUSD","RRTUSD","RRTBTC","ZECUSD","ZECBTC","XMRUSD",
                     "XMRBTC","DSHUSD","DSHBTC","BTCEUR","XRPUSD","XRPBTC","IOTUSD","IOTBTC","IOTETH","EOSUSD","EOSBTC","EOSETH","SANUSD","SANBTC",
