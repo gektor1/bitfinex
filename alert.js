@@ -1,10 +1,17 @@
 angular.module('alertApp', [])
-        .controller('AlertController', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+        .controller('AlertController', ['$scope', '$http', '$interval', '$location', '$window', function ($scope, $http, $interval, $location, $window) {
 
-                $scope.audio = new Audio('http://www.freesfx.co.uk/rx2/mp3s/6/18580_1464796418.mp3');
+//                $scope.audio = new Audio('http://www.freesfx.co.uk/rx2/mp3s/6/18580_1464796418.mp3');
+                $scope.audio = new Audio('http://www.freesfx.co.uk/rx2/mp3s/2/13654_1459784657.mp3'); //http://www.freesfx.co.uk/soundeffects/all_bells/?p=1
 
                 $scope.alert = false;
                 $scope.request = false;
+                
+                $scope.intervals = 10000;
+                
+                $scope.currency = location.search.replace(/^.*?\=/, '');
+
+                document.title = $scope.currency;
 
                 $scope.input = {};
                 $scope.result = {
@@ -13,7 +20,8 @@ angular.module('alertApp', [])
                     last: 0
                 };
                 $scope.trades = {
-                    hist: null
+                    hist: [],
+                    count: []
                 };
 
                 $scope.interval;
@@ -31,12 +39,29 @@ angular.module('alertApp', [])
                             query += '&start=' + (unix - $scope.input.n * 60 * 1000)
                         }
 
-                        $http.get('https://api.bitfinex.com/v2/trades/tBTCUSD/hist' + query).then(function (rows) {
-                            $scope.trades.hist = rows.data;
+                        $http.get('https://api.bitfinex.com/v2/trades/t' + $scope.currency + '/hist' + query).then(function (rows) {
+                            for (i in rows.data) {
+                                var exist = false;
+                                for (h in $scope.trades.hist) {
+                                    if ($scope.trades.hist[h][0] == rows.data[i][0]) exist = true;
+                                }
+                                if (!exist) $scope.trades.hist.push(rows.data[i]);
+                            }
+                            $scope.trades.hist.sort(function(a, b) { 
+                                return a[0] > b[0] ? -1 : 1;
+                            });
+
+//                            $scope.trades.hist = rows.data;
+
                             $scope.calc();
                             $scope.request = false;
+                            
+                            if ($scope.trades.hist.length >= 10000) {
+                                $scope.trades.hist.splice(-1000,1000);
+                            }
+                            
                         });
-                    }, 10000);
+                    }, $scope.intervals);
                 };
 
                 $scope.stop = function () {
@@ -48,15 +73,24 @@ angular.module('alertApp', [])
 
                 $scope.calc = function () {
                     if ($scope.trades.hist) {
+                        $scope.trades.count = [];
                         angular.forEach($scope.trades.hist, function (value, key) {
                             var price = value[3];
-                            if (key == 0) {
-                                $scope.result.last = price;
-                                $scope.result.min = price;
-                                $scope.result.max = price;
-                            } else {
-                                $scope.result.min = Math.min($scope.result.min, price);
-                                $scope.result.max = Math.max($scope.result.max, price);
+                            var timestamp = value[1];
+                            
+                            var d1 = new Date(timestamp);
+                            var d2 = new Date( Date.now() - $scope.input.n * 1000 * 60 );
+
+                            if (d2 <= d1) {
+                                $scope.trades.count.push(value);
+                                if (key == 0) {
+                                    $scope.result.last = price;
+                                    $scope.result.min = price;
+                                    $scope.result.max = price;
+                                } else {
+                                    $scope.result.min = Math.min($scope.result.min, price);
+                                    $scope.result.max = Math.max($scope.result.max, price);
+                                }
                             }
                         });
 
@@ -65,14 +99,22 @@ angular.module('alertApp', [])
                                 (($scope.result.last - $scope.result.min) / $scope.result.min * 100) > $scope.input.k
                                 ) {
                             $scope.alert = true;
+                            
+                            document.title = '!!' + $scope.currency + '!!';
+                            
                             $scope.audio.play();
                         } else {
                             $scope.alert = false;
+                            
+                            document.title = $scope.currency;
                         }
                     }
                 };
 
                 $scope.$watch("input.k", function (newValue, oldValue) {
+                    $scope.calc();
+                });
+                $scope.$watch("input.n", function (newValue, oldValue) {
                     $scope.calc();
                 });
 
